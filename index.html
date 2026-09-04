@@ -3,8 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ Chatbot with RAG - Demo</title>
+    <title>AI Chatbot for FAQs - Smart Knowledge Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #eef2ff;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-sidebar: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --user-bubble: #4f46e5;
+            --user-text: #ffffff;
+            --bot-bubble: #ffffff;
+            --bot-text: #1e293b;
+            --tag-high: #10b981;
+            --tag-med: #f59e0b;
+            --tag-low: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #0b0f19;
+            --bg-card: #151d30;
+            --bg-sidebar: #101726;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --primary-light: #1e1b4b;
+            --bot-bubble: #1a233a;
+            --bot-text: #f1f5f9;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,570 +51,1547 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+        .app-wrapper {
             width: 100%;
-            max-width: 1200px;
-            height: 800px;
+            max-width: 1280px;
+            height: 92vh;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
             display: flex;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* Sidebar */
         .sidebar {
-            width: 300px;
-            background: #f8f9fa;
-            border-right: 1px solid #e9ecef;
+            width: 320px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 20;
         }
 
         .sidebar-header {
             padding: 20px;
-            background: #6c757d;
-            color: white;
-            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .sidebar-header h3 {
-            margin-bottom: 5px;
-            font-size: 1.2em;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .sidebar-header p {
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        .document-list {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .document-item {
-            background: white;
-            padding: 15px;
-            margin-bottom: 10px;
+        .brand-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
-            border: 1px solid #e9ecef;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .document-item:hover {
-            background: #e3f2fd;
-            border-color: #2196f3;
-        }
-
-        .document-item.active {
-            background: #e3f2fd;
-            border-color: #2196f3;
-        }
-
-        .document-name {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .document-meta {
-            font-size: 0.8em;
-            color: #666;
-        }
-
-        .upload-section {
-            padding: 20px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .upload-btn {
-            width: 100%;
-            padding: 12px;
-            background: #28a745;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
         }
 
-        .upload-btn:hover {
-            background: #218838;
+        .brand-text h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.2;
         }
 
-        .chat-area {
+        .brand-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .docs-container {
             flex: 1;
+            padding: 16px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .chat-header h1 {
-            margin-bottom: 10px;
-            font-size: 1.8em;
-        }
-
-        .chat-header p {
-            opacity: 0.9;
-        }
-
-        .messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f8f9fa;
-        }
-
-        .message {
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        .message.user {
-            text-align: right;
-        }
-
-        .message.bot {
-            text-align: left;
-        }
-
-        .message-bubble {
-            display: inline-block;
-            max-width: 70%;
-            padding: 15px 20px;
-            border-radius: 20px;
-            position: relative;
-            word-wrap: break-word;
-        }
-
-        .message.user .message-bubble {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .message.bot .message-bubble {
-            background: white;
-            color: #333;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .message-meta {
-            font-size: 0.8em;
-            margin-top: 5px;
-            opacity: 0.7;
-        }
-
-        .confidence-score {
-            background: #e3f2fd;
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-top: 10px;
-            display: inline-block;
-        }
-
-        .confidence-high {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-
-        .confidence-medium {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .confidence-low {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .input-area {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .input-container {
-            display: flex;
             gap: 10px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin: 6px 0;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .message-input {
+        .doc-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .doc-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .doc-item.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .doc-icon {
+            font-size: 1.1rem;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .doc-info {
             flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            font-size: 1em;
+            min-width: 0;
+        }
+
+        .doc-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .doc-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload:hover {
+            background: var(--primary-hover);
+        }
+
+        .sidebar-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 8px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-page);
+            border-color: var(--text-muted);
+        }
+
+        /* Main Chat Container */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-info h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .chat-header-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--tag-high);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--tag-high);
+            box-shadow: 0 0 6px var(--tag-high);
+        }
+
+        .theme-btn, .mobile-menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover, .mobile-menu-btn:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* Messages Area */
+        .messages-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.25s ease-out;
+            max-width: 82%;
+        }
+
+        .message-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-row.bot {
+            align-self: flex-start;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .avatar.bot-avatar {
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: white;
+        }
+
+        .avatar.user-avatar {
+            background: #64748b;
+            color: white;
+        }
+
+        .bubble-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bubble {
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .message-row.user .bubble {
+            background: var(--user-bubble);
+            color: var(--user-text);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-row.bot .bubble {
+            background: var(--bot-bubble);
+            color: var(--bot-text);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .meta-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .confidence-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+
+        .confidence-pill.high {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--tag-high);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .confidence-pill.medium {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--tag-med);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .confidence-pill.low {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--tag-low);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .source-pill {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .source-pill:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-speak {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .btn-speak:hover {
+            color: var(--primary);
+        }
+
+        /* Related Questions Chips */
+        .related-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .chip {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        /* Quick Questions Bar */
+        .quick-questions-bar {
+            padding: 8px 24px;
+            background: var(--bg-page);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .quick-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Input Bar */
+        .input-area {
+            padding: 16px 24px 20px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-page);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 6px 8px 6px 18px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
             outline: none;
-            transition: border-color 0.3s ease;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-family: inherit;
         }
 
-        .message-input:focus {
-            border-color: #667eea;
+        .chat-input::placeholder {
+            color: var(--text-muted);
         }
 
-        .send-btn {
-            padding: 15px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-send {
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s ease;
-        }
-
-        .send-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .typing-indicator {
-            display: none;
-            margin-bottom: 20px;
-        }
-
-        .typing-indicator.show {
-            display: block;
-        }
-
-        .typing-dots {
-            display: inline-block;
-            padding: 15px 20px;
-            background: white;
-            border-radius: 20px;
-            border: 1px solid #e9ecef;
-        }
-
-        .typing-dots span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: #667eea;
-            margin: 0 2px;
-            animation: typing 1.4s infinite;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
         }
 
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
+        .btn-send:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
         }
 
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
+        .footer-note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 8px;
         }
 
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
+        .footer-note a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Typing indicator */
+        .typing-bubble {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--bot-bubble);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-6px); }
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .demo-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #ff6b6b;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-            z-index: 1000;
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 16px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 540px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 28px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .app-wrapper {
                 height: 100vh;
+                border-radius: 0;
+                border: none;
             }
-            
+
             .sidebar {
-                width: 100%;
-                height: 200px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
             }
-            
-            .message-bubble {
-                max-width: 85%;
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-btn {
+                display: flex;
             }
         }
     </style>
 </head>
 <body>
-    <div class="demo-badge">DEMO</div>
-    
-    <div class="container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h3>Knowledge Base</h3>
-                <p>Uploaded FAQ Documents</p>
-            </div>
-            
-            <div class="document-list">
-                <div class="document-item active">
-                    <div class="document-name">company_faqs.pdf</div>
-                    <div class="document-meta">Updated: 2 hours ago • 156 KB</div>
-                </div>
-                
-                <div class="document-item">
-                    <div class="document-name">product_guide.md</div>
-                    <div class="document-meta">Updated: 1 day ago • 89 KB</div>
-                </div>
-                
-                <div class="document-item">
-                    <div class="document-name">technical_support.txt</div>
-                    <div class="document-meta">Updated: 3 days ago • 234 KB</div>
-                </div>
-                
-                <div class="document-item">
-                    <div class="document-name">billing_faqs.pdf</div>
-                    <div class="document-meta">Updated: 1 week ago • 67 KB</div>
+
+<div class="app-wrapper">
+    <!-- Sidebar: Knowledge Base -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="brand-icon">AI</div>
+                <div class="brand-text">
+                    <h2>FAQ Assistant</h2>
+                    <span>RAG Knowledge Base</span>
                 </div>
             </div>
-            
-            <div class="upload-section">
-                <button class="upload-btn" onclick="uploadDocument()">+ Upload New Document</button>
+            <button class="btn-icon mobile-menu-btn" onclick="toggleSidebar()" aria-label="Close menu">✕</button>
+        </div>
+
+        <div class="docs-container">
+            <div class="section-title">
+                <span>Active Documents (<span id="docCount">5</span>)</span>
+                <span style="font-size:0.7rem; color:var(--tag-high); font-weight:600;">● Indexed</span>
+            </div>
+
+            <div id="documentList">
+                <!-- Populated via JS -->
             </div>
         </div>
-        
-        <div class="chat-area">
-            <div class="chat-header">
-                <h1>FAQ Chatbot</h1>
-                <p>Ask me anything about our products and services</p>
+
+        <div class="sidebar-footer">
+            <button class="btn-upload" onclick="openUploadModal()">
+                <span>＋</span> Upload FAQ Document
+            </button>
+            <div class="sidebar-actions">
+                <button class="btn-secondary" onclick="exportChat('markdown')">Export MD</button>
+                <button class="btn-secondary" onclick="exportChat('json')">Export JSON</button>
+                <button class="btn-secondary" onclick="resetDefaults()">Reset</button>
             </div>
-            
-            <div class="messages" id="messages">
-                <div class="message bot">
-                    <div class="message-bubble">
-                        Hello! I'm your FAQ assistant. I can help you find answers to frequently asked questions based on our knowledge base. What would you like to know?
-                    </div>
-                    <div class="message-meta">Just now</div>
-                </div>
-                
-                <div class="message user">
-                    <div class="message-bubble">
-                        What are your business hours?
-                    </div>
-                    <div class="message-meta">Just now</div>
-                </div>
-                
-                <div class="message bot">
-                    <div class="message-bubble">
-                        Our business hours are Monday through Friday, 9:00 AM to 6:00 PM EST. We're closed on weekends and major holidays. For urgent technical support, you can reach our 24/7 emergency line at +1-800-SUPPORT.
-                        
-                        <div class="confidence-score confidence-high">
-                            Confidence: 95% • Source: company_faqs.pdf
-                        </div>
-                    </div>
-                    <div class="message-meta">Just now</div>
-                </div>
-                
-                <div class="message user">
-                    <div class="message-bubble">
-                        How do I reset my password?
-                    </div>
-                    <div class="message-meta">Just now</div>
-                </div>
-                
-                <div class="message bot">
-                    <div class="message-bubble">
-                        To reset your password, follow these steps:
-                        
-                        1. Go to the login page and click "Forgot Password"
-                        2. Enter your email address associated with your account
-                        3. Check your email for a reset link (it may take up to 5 minutes)
-                        4. Click the link and create a new password
-                        5. Your new password must be at least 8 characters long and include uppercase, lowercase, and numbers
-                        
-                        If you don't receive the email, check your spam folder or contact support.
-                        
-                        <div class="confidence-score confidence-high">
-                            Confidence: 92% • Source: technical_support.txt
-                        </div>
-                    </div>
-                    <div class="message-meta">Just now</div>
+        </div>
+    </aside>
+
+    <!-- Main Chat Workspace -->
+    <main class="chat-main">
+        <header class="chat-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
+                <div class="chat-header-info">
+                    <h1>Enterprise FAQ Chatbot</h1>
+                    <p>Context-aware answers powered by semantic retrieval & RAG</p>
                 </div>
             </div>
-            
-            <div class="typing-indicator" id="typingIndicator">
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+            <div class="header-controls">
+                <div class="status-badge" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span id="statusText">RAG Engine Active</span>
+                </div>
+                <button class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
+            </div>
+        </header>
+
+        <!-- Messages Stream -->
+        <div class="messages-container" id="messagesContainer">
+            <!-- Initial welcome message -->
+            <div class="message-row bot">
+                <div class="avatar bot-avatar">AI</div>
+                <div class="bubble-content">
+                    <div class="bubble">Hello! I'm your AI FAQ Assistant. I can answer questions about our products, pricing, support hours, security policies, and billing directly from our indexed knowledge base.
+
+How can I help you today?</div>
+                    <div class="meta-bar">
+                        <span>Ready to assist</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="input-area">
-                <div class="input-container">
-                    <input type="text" class="message-input" id="messageInput" placeholder="Type your question here..." />
-                    <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+
+        <!-- Quick Questions Chips -->
+        <div class="quick-questions-bar">
+            <span class="quick-label">Try:</span>
+            <button class="chip" onclick="askQuick('What are your support hours and SLA?')">Support Hours & SLA</button>
+            <button class="chip" onclick="askQuick('How much does CloudSync Pro cost?')">CloudSync Pro Pricing</button>
+            <button class="chip" onclick="askQuick('How do I reset my account password?')">Reset Password</button>
+            <button class="chip" onclick="askQuick('What is your refund policy?')">Refund Policy</button>
+            <button class="chip" onclick="askQuick('Is TechCorp GDPR compliant?')">GDPR & Privacy</button>
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" id="userInput" class="chat-input" placeholder="Ask a question about services, pricing, technical support..." autocomplete="off" />
+                <button class="btn-icon" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input">🎤</button>
+                <button class="btn-send" id="sendBtn" onclick="submitMessage()" title="Send">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="footer-note">
+                Answers are grounded in indexed documents with confidence scoring. 
+                <a href="https://github.com/diyasambharia/AI-Chatbot-for-FAQs-" target="_blank" rel="noopener">GitHub Repository</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Document Upload / Preview Modal -->
+<div class="modal-overlay" id="docModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="modalTitle">Upload FAQ Document</h3>
+            <button class="btn-icon" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <div class="drop-zone" onclick="document.getElementById('fileUploadInput').click()">
+                <div style="font-size: 2rem; margin-bottom: 8px;">📄</div>
+                <strong>Click to select a file or drag and drop</strong>
+                <div style="color:var(--text-muted); font-size: 0.78rem; margin-top: 4px;">
+                    Supports .txt, .md, or .json FAQ files
                 </div>
             </div>
+            <input type="file" id="fileUploadInput" style="display:none" accept=".txt,.md,.json" onchange="handleFileUpload(event)">
+            <p style="font-size: 0.8rem; color: var(--text-muted);">
+                Documents are instantly tokenized, split into Q&A chunks, and indexed into the active semantic retrieval memory.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal()">Close</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const messages = document.getElementById('messages');
-        const messageInput = document.getElementById('messageInput');
-        const typingIndicator = document.getElementById('typingIndicator');
+<script>
+/**
+ * In-Browser Semantic Search & Retrieval Engine (Pure JavaScript RAG).
+ * Fully self-contained so the app works on GitHub Pages without server dependencies,
+ * while automatically querying the Flask backend if available!
+ */
 
-        // Sample responses for demo
-        const sampleResponses = [
-            {
-                text: "I understand you're looking for information about our pricing. Our basic plan starts at $29/month, professional plan at $79/month, and enterprise plan at $199/month. All plans include free support and a 30-day money-back guarantee.",
-                confidence: 88,
-                source: "billing_faqs.pdf"
-            },
-            {
-                text: "Our platform supports integration with over 500+ third-party applications including Salesforce, Slack, Microsoft Teams, Google Workspace, and many others. You can find the complete list in our integrations directory.",
-                confidence: 95,
-                source: "product_guide.md"
-            },
-            {
-                text: "To cancel your subscription, go to Account Settings > Billing > Subscription and click 'Cancel Subscription'. You'll retain access until the end of your current billing period. No cancellation fees apply.",
-                confidence: 91,
-                source: "billing_faqs.pdf"
-            },
-            {
-                text: "System requirements include: Windows 10+ or macOS 10.14+, 8GB RAM minimum (16GB recommended), 2GB free disk space, and a stable internet connection. Mobile apps are available for iOS 13+ and Android 8+.",
-                confidence: 93,
-                source: "technical_support.txt"
-            }
-        ];
+// Embedded Initial FAQ Knowledge Base
+const DEFAULT_DOCUMENTS = [
+    {
+        name: "company_faqs.txt",
+        size: "1.4 KB",
+        content: `
+Q: What is TechCorp Solutions?
+A: TechCorp Solutions is a leading software and digital transformation company founded in 2020. We specialize in enterprise cloud migration, artificial intelligence workflows, data analytics, and custom modern software engineering.
 
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
+Q: Where is TechCorp Solutions located?
+A: Our global headquarters is located in San Francisco, California (500 Howard Street, Suite 400, San Francisco, CA 94105). We also maintain regional innovation hubs in New York, London, and Singapore.
 
-            // Add user message
-            addMessage(text, 'user');
-            messageInput.value = '';
+Q: What are your standard business and operating hours?
+A: Our general offices and standard customer service teams operate Monday through Friday from 8:00 AM to 6:00 PM Pacific Standard Time (PST). Our technical incident response team operates 24/7/365 for critical production alerts.
 
-            // Show typing indicator
-            showTypingIndicator();
+Q: How can I contact TechCorp customer support and sales?
+A: You can reach us through multiple channels: Sales Inquiries at sales@techcorp.io or +1 (800) 555-0199 (Mon-Fri, 9am-5pm PST); Customer Support at support@techcorp.io; Media at press@techcorp.io; Security at security@techcorp.io.
 
-            // Simulate API response
-            setTimeout(() => {
-                hideTypingIndicator();
-                const response = sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
-                addBotMessage(response.text, response.confidence, response.source);
-            }, 1500 + Math.random() * 1000);
-        }
+Q: What industries does TechCorp Solutions serve?
+A: We build software and AI solutions for financial services, healthcare and life sciences, retail and e-commerce, logistics, and SaaS technology companies.
+`
+    },
+    {
+        name: "pricing_and_plans.txt",
+        size: "1.8 KB",
+        content: `
+Q: What products does TechCorp offer?
+A: TechCorp offers three flagship products:
+1. CloudSync Pro: An automated cloud migration and infrastructure observability platform.
+2. AI Assistant Plus: An intelligent enterprise conversational agent powered by retrieval-augmented generation.
+3. SecureGuard Suite: A real-time API monitoring and automated compliance audit toolkit.
 
-        function addMessage(text, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.textContent = text;
-            
-            const meta = document.createElement('div');
-            meta.className = 'message-meta';
-            meta.textContent = 'Just now';
-            
-            messageDiv.appendChild(bubble);
-            messageDiv.appendChild(meta);
-            messages.appendChild(messageDiv);
-            
-            scrollToBottom();
-        }
+Q: How much does CloudSync Pro cost?
+A: CloudSync Pro is offered in three tiers:
+- Starter Tier: $49/month for small teams managing up to 25 cloud resources with community support.
+- Growth Tier: $149/month for mid-market businesses managing up to 250 resources with automated daily backups and email support.
+- Enterprise Tier: $499/month for unlimited resources, multi-cloud redundancy, dedicated account manager, and custom SLA.
 
-        function addBotMessage(text, confidence, source) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bot';
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            bubble.innerHTML = text;
-            
-            // Add confidence score
-            const confidenceDiv = document.createElement('div');
-            confidenceDiv.className = `confidence-score ${getConfidenceClass(confidence)}`;
-            confidenceDiv.textContent = `Confidence: ${confidence}% • Source: ${source}`;
-            bubble.appendChild(confidenceDiv);
-            
-            const meta = document.createElement('div');
-            meta.className = 'message-meta';
-            meta.textContent = 'Just now';
-            
-            messageDiv.appendChild(bubble);
-            messageDiv.appendChild(meta);
-            messages.appendChild(messageDiv);
-            
-            scrollToBottom();
-        }
+Q: What is AI Assistant Plus and what are its features?
+A: AI Assistant Plus is our AI-powered FAQ and customer support assistant. It integrates directly with website frontends, Zendesk, and Slack. Features include semantic document search, automated confidence scoring, and 30+ language translation.
 
-        function getConfidenceClass(confidence) {
-            if (confidence >= 90) return 'confidence-high';
-            if (confidence >= 70) return 'confidence-medium';
-            return 'confidence-low';
-        }
+Q: Do you offer a free trial?
+A: Yes! All our products offer a 14-day full-featured free trial with no credit card required at sign up.
 
-        function showTypingIndicator() {
-            typingIndicator.classList.add('show');
-            scrollToBottom();
-        }
+Q: Are there discounts for annual billing or non-profit organizations?
+A: Yes. Annual subscriptions receive a 20% discount compared to month-to-month billing. We also offer a 30% discount for qualified non-profit educational and healthcare institutions.
+`
+    },
+    {
+        name: "technical_support.txt",
+        size: "1.6 KB",
+        content: `
+Q: What are your support hours and availability?
+A: Our support tiers provide the following hours:
+- Standard Support (Starter & Growth plans): Monday through Friday, 8:00 AM to 6:00 PM PST.
+- Premium Support (Enterprise plan): 24/7/365 priority assistance via phone, email, and private Slack channel.
 
-        function hideTypingIndicator() {
-            typingIndicator.classList.remove('show');
-        }
+Q: What is your guaranteed SLA response time for technical issues?
+A: Our Service Level Agreement response targets are:
+- Priority 1 (System Down / Critical Outage): Under 15 minutes response time, 24/7.
+- Priority 2 (Major Feature Impairment): Under 2 hours response time.
+- Priority 3 (Minor Bug / Performance Degradation): Under 8 business hours.
+- Priority 4 (General Inquiries): Under 24 business hours.
 
-        function scrollToBottom() {
-            messages.scrollTop = messages.scrollHeight;
-        }
+Q: How do I submit a bug report or support ticket?
+A: You can open a ticket through:
+1. Support Portal: Log into dashboard.techcorp.io and click Help & Support > New Ticket.
+2. Email: Send your request and error logs to support@techcorp.io.
+3. In-App Chat: Click the chatbot icon in the bottom right corner of the web console.
 
-        function uploadDocument() {
-            alert('Document upload functionality would integrate with your backend API to process and embed new FAQ documents.');
-        }
+Q: What browsers and operating systems are officially supported?
+A: We support Chrome 105+, Firefox 110+, Safari 16+, and Edge 105+ on Windows 10/11, macOS Monterey+, Ubuntu 20.04+, and modern iOS/Android browsers.
+`
+    },
+    {
+        name: "security_and_privacy.txt",
+        size: "1.5 KB",
+        content: `
+Q: How do I reset my account password?
+A: To reset your account password:
+1. Visit dashboard.techcorp.io/login and click "Forgot Password".
+2. Enter your account email and click "Send Reset Link".
+3. Check your inbox for the reset email (valid for 30 minutes).
+4. Enter your new password (minimum 10 characters, 1 uppercase letter, 1 number, and 1 special symbol).
 
-        // Handle Enter key
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+Q: Does TechCorp support Two-Factor Authentication (2FA)?
+A: Yes! Enable 2FA in Account Settings > Security > Multi-Factor Authentication. We support TOTP authenticator apps (Google Authenticator, Authy, 1Password) and hardware security keys (FIDO2 / WebAuthn).
+
+Q: How is customer data encrypted and protected?
+A: All customer data is encrypted in transit using TLS 1.3 and encrypted at rest using AES-256 on SOC-2 Type II certified and ISO 27001 compliant cloud infrastructure.
+
+Q: Is TechCorp GDPR and CCPA compliant?
+A: Yes. We fully comply with GDPR and CCPA regulations. Users can request a data export or account deletion by emailing privacy@techcorp.io.
+
+Q: Do you train AI models on customer documents or conversations?
+A: No. Customer documents, uploaded FAQs, and chat queries are never used to train public foundational AI models.
+`
+    },
+    {
+        name: "billing_and_refunds.txt",
+        size: "1.3 KB",
+        content: `
+Q: What payment methods do you accept?
+A: We accept all major credit and debit cards (Visa, MasterCard, American Express, Discover), PayPal, and direct wire / ACH transfers for annual enterprise contracts over $2,000.
+
+Q: Where can I find and download my invoices?
+A: Account owners can view and download PDF invoices anytime by navigating to Dashboard > Billing > Invoice History.
+
+Q: What is your refund policy?
+A: We offer a 30-day money-back guarantee for all newly purchased monthly or annual subscription plans. Contact billing@techcorp.io within 30 days of purchase for a 100% full refund with no cancellation penalties.
+
+Q: How do I cancel my subscription?
+A: Cancel anytime under Account Settings > Billing & Subscriptions > Manage Plan > Cancel Subscription. Access remains active until the end of your prepaid period.
+
+Q: What happens to my data after I cancel?
+A: Your account enters a 30-day read-only grace period to export data. After 30 days, data is permanently purged in accordance with our data retention policy.
+`
+    }
+];
+
+class ClientFAQEngine {
+    constructor() {
+        this.documents = [];
+        this.chunks = [];
+        this.idf = {};
+        this.chunkVectors = [];
+        this.stopWords = new Set([
+            "the", "is", "at", "which", "on", "a", "an", "and", "or", "in", "to",
+            "for", "of", "with", "as", "by", "from", "it", "this", "that", "are",
+            "was", "were", "be", "been", "being", "have", "has", "had", "do",
+            "does", "did", "can", "could", "should", "would", "will", "i", "you",
+            "we", "they", "my", "your", "our", "their", "me", "him", "her", "us",
+            "what", "where", "how", "when", "who", "tell", "about", "give"
+        ]);
+    }
+
+    tokenize(text) {
+        return (text.toLowerCase().match(/\b[a-z0-9_]{2,}\b/g) || [])
+            .filter(w => !this.stopWords.has(w));
+    }
+
+    loadDocuments(docList) {
+        this.documents = JSON.parse(JSON.stringify(docList));
+        this.chunks = [];
+
+        this.documents.forEach((doc, docIdx) => {
+            const parsed = this.parseDocument(doc.content, doc.name);
+            doc.chunkCount = parsed.length;
+            this.chunks.push(...parsed);
         });
 
-        // Document click handlers
-        document.querySelectorAll('.document-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.document-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
+        this.buildIndex();
+    }
+
+    parseDocument(content, sourceName) {
+        const chunks = [];
+        const pattern = /(?:^|\n)##?\s*Q:\s*(.*?)\n(?:##?\s*A:\s*|A:\s*)(.*?)(?=(?:\n##?\s*Q:|\Z))/gi;
+        let match;
+        let id = 0;
+
+        while ((match = pattern.exec(content)) !== null) {
+            const q = match[1].trim();
+            const a = match[2].trim();
+            if (q && a) {
+                chunks.push({
+                    id: `${sourceName}-${id++}`,
+                    question: q,
+                    answer: a,
+                    source: sourceName,
+                    tokens: this.tokenize(`${q} ${a}`)
+                });
+            }
+        }
+
+        // Fallback if no explicit Q: / A: markers
+        if (chunks.length === 0) {
+            const paras = content.split(/\n\n+/).filter(p => p.trim().length > 30);
+            paras.forEach((p, idx) => {
+                const lines = p.trim().split("\n");
+                const q = lines[0].replace(/^[#\s\*\-]+/, "").trim();
+                const a = lines.slice(1).join("\n").trim() || p;
+                chunks.push({
+                    id: `${sourceName}-${idx}`,
+                    question: q,
+                    answer: a,
+                    source: sourceName,
+                    tokens: this.tokenize(`${q} ${a}`)
+                });
+            });
+        }
+
+        return chunks;
+    }
+
+    buildIndex() {
+        const totalDocs = this.chunks.length;
+        if (totalDocs === 0) return;
+
+        // Document frequency
+        const docFreq = {};
+        this.chunks.forEach(chunk => {
+            const uniqueWords = new Set(chunk.tokens);
+            uniqueWords.forEach(w => {
+                docFreq[w] = (docFreq[w] || 0) + 1;
             });
         });
-    </script>
+
+        // IDF
+        this.idf = {};
+        for (const [word, count] of Object.entries(docFreq)) {
+            this.idf[word] = Math.log((1.0 + totalDocs) / (1.0 + count)) + 1.0;
+        }
+
+        // TF-IDF Unit Vectors
+        this.chunkVectors = this.chunks.map(chunk => {
+            const tf = {};
+            chunk.tokens.forEach(w => tf[w] = (tf[w] || 0) + 1);
+
+            const vec = {};
+            let sumSq = 0;
+            for (const [w, count] of Object.entries(tf)) {
+                const val = count * (this.idf[w] || 1.0);
+                vec[w] = val;
+                sumSq += val * val;
+            }
+
+            const norm = Math.sqrt(sumSq) || 1.0;
+            for (const w in vec) vec[w] /= norm;
+            return vec;
+        });
+    }
+
+    query(queryString) {
+        if (!queryString || !queryString.trim()) {
+            return {
+                answer: "Please enter a question so I can assist you.",
+                confidence: 0,
+                sources: [],
+                related_questions: []
+            };
+        }
+
+        const qTokens = this.tokenize(queryString);
+        const qTf = {};
+        qTokens.forEach(w => qTf[w] = (qTf[w] || 0) + 1);
+
+        const qVec = {};
+        let sumSq = 0;
+        for (const [w, count] of Object.entries(qTf)) {
+            if (this.idf[w]) {
+                const val = count * this.idf[w];
+                qVec[w] = val;
+                sumSq += val * val;
+            }
+        }
+        const norm = Math.sqrt(sumSq) || 1.0;
+        for (const w in qVec) qVec[w] /= norm;
+
+        // Compute Cosine Similarities with Title-Overlap Boost
+        const scored = this.chunks.map((chunk, i) => {
+            let dot = 0;
+            for (const [w, val] of Object.entries(qVec)) {
+                if (this.chunkVectors[i][w]) {
+                    dot += val * this.chunkVectors[i][w];
+                }
+            }
+
+            // Keyword overlap in question title boost
+            const chunkQTokens = new Set(this.tokenize(chunk.question));
+            const overlap = qTokens.filter(t => chunkQTokens.has(t)).length;
+            if (overlap > 0) {
+                dot += 0.20 * Math.min(overlap / Math.max(qTokens.length, 1), 1.0);
+            }
+
+            return { score: dot, chunk };
+        });
+
+        scored.sort((a, b) => b.score - a.score);
+
+        const best = scored[0];
+        const confidence = Math.min(Math.round((best ? best.score : 0) * 100), 99);
+
+        if (!best || best.score < 0.15 || confidence < 20) {
+            const related = scored.slice(0, 3)
+                .filter(s => s.score > 0.05)
+                .map(s => s.chunk.question);
+
+            return {
+                answer: "I couldn't find a direct answer to that question in the current knowledge base.\n\nYou can try rephrasing, ask about our products/pricing, or upload additional FAQ documents via the sidebar.",
+                confidence: Math.max(confidence, 18),
+                sources: related.length > 0 ? [best.chunk.source] : [],
+                related_questions: related
+            };
+        }
+
+        const sources = [...new Set(scored.filter(s => s.score > 0.15).slice(0, 3).map(s => s.chunk.source))];
+        const related = scored.slice(1, 4)
+            .filter(s => s.score > 0.10 && s.chunk.question !== best.chunk.question)
+            .map(s => s.chunk.question);
+
+        return {
+            answer: best.chunk.answer,
+            matched_question: best.chunk.question,
+            confidence: confidence,
+            sources: sources,
+            related_questions: related
+        };
+    }
+}
+
+// App State
+const engine = new ClientFAQEngine();
+let conversationHistory = [];
+let backendAvailable = false;
+
+// Initialize
+window.addEventListener('DOMContentLoaded', async () => {
+    // Check if local storage has saved docs, else use defaults
+    const savedDocs = localStorage.getItem('faq_docs');
+    if (savedDocs) {
+        try {
+            engine.loadDocuments(JSON.parse(savedDocs));
+        } catch (e) {
+            engine.loadDocuments(DEFAULT_DOCUMENTS);
+        }
+    } else {
+        engine.loadDocuments(DEFAULT_DOCUMENTS);
+    }
+
+    renderDocumentList();
+    checkBackendConnection();
+
+    // Check saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').textContent = '☀️';
+    }
+
+    // Input Enter Key
+    document.getElementById('userInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitMessage();
+    });
+});
+
+// Check if Python Flask server is active
+async function checkBackendConnection() {
+    try {
+        const res = await fetch('/api/health');
+        if (res.ok) {
+            backendAvailable = true;
+            document.getElementById('statusText').textContent = 'Connected: Python Server';
+        }
+    } catch (e) {
+        backendAvailable = false;
+        document.getElementById('statusText').textContent = 'Client RAG Engine Active';
+    }
+}
+
+// Render Document List in Sidebar
+function renderDocumentList() {
+    const listEl = document.getElementById('documentList');
+    listEl.innerHTML = '';
+    document.getElementById('docCount').textContent = engine.documents.length;
+
+    engine.documents.forEach((doc, idx) => {
+        const item = document.createElement('div');
+        item.className = `doc-item ${idx === 0 ? 'active' : ''}`;
+        item.innerHTML = `
+            <div class="doc-icon">📄</div>
+            <div class="doc-info">
+                <div class="doc-title">${doc.name}</div>
+                <div class="doc-meta">${doc.chunkCount || '5'} FAQs • ${doc.size || '1.5 KB'}</div>
+            </div>
+        `;
+        item.onclick = () => previewDocument(doc);
+        listEl.appendChild(item);
+    });
+}
+
+// Document Preview Modal
+function previewDocument(doc) {
+    document.getElementById('modalTitle').textContent = doc.name;
+    document.getElementById('modalBody').innerHTML = `
+        <div style="background:var(--bg-page); border:1px solid var(--border-color); border-radius:8px; padding:16px; font-family:'JetBrains Mono', monospace; font-size:0.8rem; white-space:pre-wrap;">
+${doc.content.trim()}
+        </div>
+    `;
+    document.getElementById('docModal').classList.add('open');
+}
+
+function openUploadModal() {
+    document.getElementById('modalTitle').textContent = 'Upload FAQ Document';
+    document.getElementById('modalBody').innerHTML = `
+        <div class="drop-zone" onclick="document.getElementById('fileUploadInput').click()">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">📂</div>
+            <strong>Click to select a file or drag and drop here</strong>
+            <div style="color:var(--text-muted); font-size: 0.78rem; margin-top: 6px;">
+                Supports .txt, .md, or .json files with Q&A or paragraphs
+            </div>
+        </div>
+        <input type="file" id="fileUploadInput" style="display:none" accept=".txt,.md,.json" onchange="handleFileUpload(event)">
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+            Once uploaded, the document will be automatically chunked and indexed into memory.
+        </p>
+    `;
+    document.getElementById('docModal').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('docModal').classList.remove('open');
+}
+
+// Handle File Upload
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        const newDoc = {
+            name: file.name,
+            size: `${(file.size / 1024).toFixed(1)} KB`,
+            content: content
+        };
+
+        engine.documents.push(newDoc);
+        engine.loadDocuments(engine.documents);
+        localStorage.setItem('faq_docs', JSON.stringify(engine.documents));
+        renderDocumentList();
+        closeModal();
+
+        addBotMessage({
+            answer: `Successfully indexed "${file.name}"! Added ${newDoc.chunkCount} new Q&A chunks to the active knowledge base. You can now ask questions about it.`,
+            confidence: 99,
+            sources: [file.name]
+        });
+    };
+    reader.readAsText(file);
+}
+
+// Reset Knowledge Base to Defaults
+function resetDefaults() {
+    if (confirm("Reset knowledge base to original default FAQ documents?")) {
+        localStorage.removeItem('faq_docs');
+        engine.loadDocuments(DEFAULT_DOCUMENTS);
+        renderDocumentList();
+        addBotMessage({
+            answer: "Knowledge base has been reset to default FAQ documents.",
+            confidence: 99,
+            sources: ["system"]
+        });
+    }
+}
+
+// Submit user message
+async function submitMessage() {
+    const input = document.getElementById('userInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    addUserMessage(query);
+    input.value = '';
+
+    showTyping();
+
+    setTimeout(async () => {
+        let response;
+        if (backendAvailable) {
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                if (res.ok) {
+                    response = await res.json();
+                } else {
+                    response = engine.query(query);
+                }
+            } catch (err) {
+                response = engine.query(query);
+            }
+        } else {
+            response = engine.query(query);
+        }
+
+        hideTyping();
+        addBotMessage(response);
+    }, 450);
+}
+
+function askQuick(text) {
+    document.getElementById('userInput').value = text;
+    submitMessage();
+}
+
+function addUserMessage(text) {
+    conversationHistory.push({ role: 'user', content: text, timestamp: new Date().toISOString() });
+    const container = document.getElementById('messagesContainer');
+
+    const row = document.createElement('div');
+    row.className = 'message-row user';
+    row.innerHTML = `
+        <div class="avatar user-avatar">You</div>
+        <div class="bubble-content">
+            <div class="bubble">${escapeHtml(text)}</div>
+            <div class="meta-bar"><span>Just now</span></div>
+        </div>
+    `;
+    container.appendChild(row);
+    scrollToBottom();
+}
+
+function addBotMessage(res) {
+    conversationHistory.push({
+        role: 'assistant',
+        content: res.answer,
+        confidence: res.confidence,
+        sources: res.sources,
+        timestamp: new Date().toISOString()
+    });
+
+    const container = document.getElementById('messagesContainer');
+    const row = document.createElement('div');
+    row.className = 'message-row bot';
+
+    let confClass = 'high';
+    if (res.confidence < 50) confClass = 'low';
+    else if (res.confidence < 75) confClass = 'medium';
+
+    let sourcesHtml = '';
+    if (res.sources && res.sources.length > 0) {
+        sourcesHtml = res.sources.map(s => `<span class="source-pill" onclick="findAndPreview('${s}')">📄 ${s}</span>`).join(' ');
+    }
+
+    let relatedHtml = '';
+    if (res.related_questions && res.related_questions.length > 0) {
+        relatedHtml = `
+            <div class="related-chips">
+                ${res.related_questions.map(q => `<button class="chip" onclick="askQuick('${escapeHtml(q)}')">${escapeHtml(q)}</button>`).join('')}
+            </div>
+        `;
+    }
+
+    row.innerHTML = `
+        <div class="avatar bot-avatar">AI</div>
+        <div class="bubble-content">
+            <div class="bubble">${escapeHtml(res.answer)}</div>
+            <div class="meta-bar">
+                <span class="confidence-pill ${confClass}">● ${res.confidence}% Match</span>
+                ${sourcesHtml}
+                <button class="btn-speak" onclick="speakText(this)" title="Read aloud">🔊 Listen</button>
+            </div>
+            ${relatedHtml}
+        </div>
+    `;
+    container.appendChild(row);
+    scrollToBottom();
+}
+
+function findAndPreview(docName) {
+    const doc = engine.documents.find(d => d.name === docName);
+    if (doc) previewDocument(doc);
+}
+
+// Typing Indicator
+function showTyping() {
+    const container = document.getElementById('messagesContainer');
+    const typingRow = document.createElement('div');
+    typingRow.id = 'typingRow';
+    typingRow.className = 'message-row bot';
+    typingRow.innerHTML = `
+        <div class="avatar bot-avatar">AI</div>
+        <div class="bubble-content">
+            <div class="typing-bubble">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    `;
+    container.appendChild(typingRow);
+    scrollToBottom();
+}
+
+function hideTyping() {
+    const el = document.getElementById('typingRow');
+    if (el) el.remove();
+}
+
+function scrollToBottom() {
+    const container = document.getElementById('messagesContainer');
+    container.scrollTop = container.scrollHeight;
+}
+
+// Speech Synthesis (Read Aloud)
+function speakText(btn) {
+    if (!('speechSynthesis' in window)) {
+        alert("Text-to-speech is not supported in this browser.");
+        return;
+    }
+    window.speechSynthesis.cancel();
+    const bubble = btn.closest('.bubble-content').querySelector('.bubble');
+    const utterance = new SpeechSynthesisUtterance(bubble.textContent);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
+}
+
+// Voice Recognition
+let recognition;
+function toggleVoiceInput() {
+    const micBtn = document.getElementById('micBtn');
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert("Voice speech recognition is not supported in this browser. Please try Chrome or Edge.");
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!recognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => {
+            micBtn.style.color = '#ef4444';
+            document.getElementById('userInput').placeholder = "Listening... Speak your question now";
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('userInput').value = transcript;
+            submitMessage();
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech error", event);
+            micBtn.style.color = '';
+            document.getElementById('userInput').placeholder = "Ask a question about services, pricing, technical support...";
+        };
+
+        recognition.onend = () => {
+            micBtn.style.color = '';
+            document.getElementById('userInput').placeholder = "Ask a question about services, pricing, technical support...";
+        };
+    }
+
+    try {
+        recognition.start();
+    } catch(e) {
+        recognition.stop();
+    }
+}
+
+// Export Chat History
+function exportChat(format) {
+    if (conversationHistory.length === 0) {
+        alert("No chat messages to export yet.");
+        return;
+    }
+
+    let dataStr, filename, mimeType;
+    if (format === 'markdown') {
+        let md = `# FAQ Chatbot Conversation Log\nExported: ${new Date().toLocaleString()}\n\n---\n\n`;
+        conversationHistory.forEach(item => {
+            const role = item.role === 'user' ? '👤 User' : '🤖 Assistant';
+            md += `### ${role} (${item.timestamp.slice(11, 19)})\n${item.content}\n`;
+            if (item.confidence) {
+                md += `*Confidence: ${item.confidence}% | Sources: ${(item.sources || []).join(', ')}*\n`;
+            }
+            md += `\n---\n\n`;
+        });
+        dataStr = "data:text/markdown;charset=utf-8," + encodeURIComponent(md);
+        filename = `faq_chat_${Date.now()}.md`;
+    } else {
+        const json = JSON.stringify(conversationHistory, null, 2);
+        dataStr = "data:application/json;charset=utf-8," + encodeURIComponent(json);
+        filename = `faq_chat_${Date.now()}.json`;
+    }
+
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+// Theme Toggle
+function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('themeToggle').textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeToggle').textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
 </body>
 </html>

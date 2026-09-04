@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" style="background:#0b0f19; font-family:'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <linearGradient id="winGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#151d30" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="bubbleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Browser Window Wrapper -->
+  <g transform="translate(30, 25)" filter="url(#shadow)">
+    <!-- Frame -->
+    <rect width="1040" height="630" rx="16" fill="url(#winGrad)" stroke="#1e293b" stroke-width="1.5" />
+
+    <!-- Window Topbar -->
+    <rect width="1040" height="42" rx="16" fill="#101726" />
+    <path d="M 0 30 L 0 42 L 1040 42 L 1040 30 Z" fill="#101726" />
+    <line x1="0" y1="42" x2="1040" y2="42" stroke="#1e293b" stroke-width="1" />
+    
+    <!-- Traffic lights -->
+    <circle cx="25" cy="21" r="5.5" fill="#ef4444" />
+    <circle cx="43" cy="21" r="5.5" fill="#f59e0b" />
+    <circle cx="61" cy="21" r="5.5" fill="#10b981" />
+
+    <!-- Address pill -->
+    <rect x="260" y="10" width="520" height="22" rx="11" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+    <text x="520" y="25" fill="#94a3b8" font-size="11" text-anchor="middle">https://diyasambharia.github.io/AI-Chatbot-for-FAQs-/</text>
+
+    <!-- Sidebar (Left) -->
+    <g transform="translate(0, 42)">
+      <rect width="280" height="588" fill="#101726" stroke="#1e293b" stroke-width="1" />
+
+      <!-- Sidebar Brand -->
+      <g transform="translate(18, 16)">
+        <rect width="36" height="36" rx="8" fill="#4f46e5" />
+        <text x="18" y="23" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle">AI</text>
+        <text x="48" y="18" fill="#f8fafc" font-size="13" font-weight="700">FAQ Assistant</text>
+        <text x="48" y="32" fill="#94a3b8" font-size="10">RAG Knowledge Base</text>
+      </g>
+
+      <line x1="0" y1="68" x2="280" y2="68" stroke="#1e293b" stroke-width="1" />
+
+      <!-- Documents list heading -->
+      <text x="18" y="94" fill="#64748b" font-size="10" font-weight="700" letter-spacing="0.5">ACTIVE DOCUMENTS (5)</text>
+      <text x="245" y="94" fill="#10b981" font-size="10" font-weight="600">● Indexed</text>
+
+      <!-- Document items -->
+      <g transform="translate(14, 110)">
+        <!-- Item 1 (active) -->
+        <rect width="252" height="50" rx="8" fill="#1e1b4b" stroke="#4f46e5" stroke-width="1" />
+        <text x="14" y="22" fill="#38bdf8" font-size="14">📄</text>
+        <text x="38" y="22" fill="#f8fafc" font-size="11" font-weight="600">company_faqs.txt</text>
+        <text x="38" y="38" fill="#94a3b8" font-size="9">5 FAQs • 1.4 KB</text>
+
+        <!-- Item 2 -->
+        <g transform="translate(0, 58)">
+          <rect width="252" height="50" rx="8" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+          <text x="14" y="22" fill="#38bdf8" font-size="14">📄</text>
+          <text x="38" y="22" fill="#cbd5e1" font-size="11" font-weight="600">pricing_and_plans.txt</text>
+          <text x="38" y="38" fill="#64748b" font-size="9">5 FAQs • 1.8 KB</text>
+        </g>
+
+        <!-- Item 3 -->
+        <g transform="translate(0, 116)">
+          <rect width="252" height="50" rx="8" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+          <text x="14" y="22" fill="#38bdf8" font-size="14">📄</text>
+          <text x="38" y="22" fill="#cbd5e1" font-size="11" font-weight="600">technical_support.txt</text>
+          <text x="38" y="38" fill="#64748b" font-size="9">5 FAQs • 1.6 KB</text>
+        </g>
+
+        <!-- Item 4 -->
+        <g transform="translate(0, 174)">
+          <rect width="252" height="50" rx="8" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+          <text x="14" y="22" fill="#38bdf8" font-size="14">📄</text>
+          <text x="38" y="22" fill="#cbd5e1" font-size="11" font-weight="600">security_and_privacy.txt</text>
+          <text x="38" y="38" fill="#64748b" font-size="9">5 FAQs • 1.5 KB</text>
+        </g>
+
+        <!-- Item 5 -->
+        <g transform="translate(0, 232)">
+          <rect width="252" height="50" rx="8" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+          <text x="14" y="22" fill="#38bdf8" font-size="14">📄</text>
+          <text x="38" y="22" fill="#cbd5e1" font-size="11" font-weight="600">billing_and_refunds.txt</text>
+          <text x="38" y="38" fill="#64748b" font-size="9">5 FAQs • 1.3 KB</text>
+        </g>
+      </g>
+
+      <!-- Upload button -->
+      <g transform="translate(14, 495)">
+        <rect width="252" height="38" rx="8" fill="#4f46e5" />
+        <text x="126" y="24" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">＋ Upload FAQ Document</text>
+      </g>
+      <!-- Action buttons -->
+      <g transform="translate(14, 540)">
+        <rect width="78" height="30" rx="6" fill="#151d30" stroke="#1e293b" />
+        <text x="39" y="19" fill="#94a3b8" font-size="9.5" text-anchor="middle">Export MD</text>
+
+        <rect x="86" width="78" height="30" rx="6" fill="#151d30" stroke="#1e293b" />
+        <text x="125" y="19" fill="#94a3b8" font-size="9.5" text-anchor="middle">Export JSON</text>
+
+        <rect x="172" width="80" height="30" rx="6" fill="#151d30" stroke="#1e293b" />
+        <text x="212" y="19" fill="#94a3b8" font-size="9.5" text-anchor="middle">Reset Docs</text>
+      </g>
+    </g>
+
+    <!-- Main Chat Workspace (Right) -->
+    <g transform="translate(280, 42)">
+      <!-- Header -->
+      <rect width="760" height="60" fill="#151d30" stroke="#1e293b" stroke-width="1" />
+      <text x="24" y="27" fill="#f8fafc" font-size="14" font-weight="700">Enterprise FAQ Chatbot</text>
+      <text x="24" y="44" fill="#94a3b8" font-size="10.5">Context-aware answers powered by semantic retrieval &amp; RAG</text>
+
+      <!-- Status Pill -->
+      <g transform="translate(610, 16)">
+        <rect width="130" height="26" rx="13" fill="#064e3b" stroke="#059669" stroke-width="0.8" />
+        <circle cx="14" cy="13" r="3.5" fill="#10b981" />
+        <text x="26" y="17" fill="#6ee7b7" font-size="9.5" font-weight="600">RAG Engine Active</text>
+      </g>
+
+      <!-- Conversation Container -->
+      <g transform="translate(24, 75)">
+        <!-- Message 1: Bot Welcome -->
+        <g transform="translate(0, 0)">
+          <circle cx="16" cy="16" r="16" fill="#4f46e5" />
+          <text x="16" y="20" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">AI</text>
+          <rect x="42" width="480" height="56" rx="10" fill="#1a233a" stroke="#1e293b" stroke-width="1" />
+          <text x="56" y="24" fill="#f1f5f9" font-size="11">Hello! I'm your AI FAQ Assistant. I can answer questions about our products,</text>
+          <text x="56" y="42" fill="#f1f5f9" font-size="11">pricing, support hours, and security directly from our indexed knowledge base.</text>
+        </g>
+
+        <!-- Message 2: User Question -->
+        <g transform="translate(250, 75)">
+          <rect width="420" height="42" rx="10" fill="url(#bubbleGrad)" />
+          <text x="18" y="26" fill="#ffffff" font-size="11.5" font-weight="500">What are your support hours and SLA response times?</text>
+          <circle cx="435" cy="21" r="14" fill="#64748b" />
+          <text x="435" y="25" fill="#ffffff" font-size="9" font-weight="700" text-anchor="middle">You</text>
+        </g>
+
+        <!-- Message 3: Bot Answer with Confidence & Citations -->
+        <g transform="translate(0, 135)">
+          <circle cx="16" cy="16" r="16" fill="#4f46e5" />
+          <text x="16" y="20" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle">AI</text>
+          <rect x="42" width="620" height="155" rx="10" fill="#1a233a" stroke="#1e293b" stroke-width="1" />
+          
+          <text x="58" y="25" fill="#f8fafc" font-size="11" font-weight="600">Our support tiers provide the following hours:</text>
+          <text x="58" y="45" fill="#cbd5e1" font-size="10.5">• Standard Support: Monday through Friday, 8:00 AM to 6:00 PM PST</text>
+          <text x="58" y="65" fill="#cbd5e1" font-size="10.5">• Premium Support: 24/7/365 priority assistance via phone, email, and Slack</text>
+          <text x="58" y="85" fill="#cbd5e1" font-size="10.5">• SLA Response Target: Critical P1 issues are addressed in under 15 minutes.</text>
+
+          <!-- Badges Bar -->
+          <g transform="translate(58, 105)">
+            <!-- Confidence Badge -->
+            <rect width="92" height="22" rx="11" fill="#064e3b" stroke="#10b981" stroke-width="0.8" />
+            <text x="46" y="15" fill="#6ee7b7" font-size="9" font-weight="700" text-anchor="middle">● 94% Match</text>
+
+            <!-- Source Pill -->
+            <rect x="100" width="165" height="22" rx="11" fill="#101726" stroke="#1e293b" stroke-width="1" />
+            <text x="182" y="15" fill="#38bdf8" font-size="9" text-anchor="middle">📄 technical_support.txt</text>
+
+            <!-- Listen Button -->
+            <rect x="272" width="75" height="22" rx="11" fill="#101726" stroke="#1e293b" stroke-width="1" />
+            <text x="310" y="15" fill="#94a3b8" font-size="9" text-anchor="middle">🔊 Listen</text>
+          </g>
+          
+          <!-- Related topics chips -->
+          <g transform="translate(58, 134)">
+            <rect width="180" height="18" rx="9" fill="#151d30" stroke="#334155" stroke-width="0.8" />
+            <text x="90" y="12" fill="#cbd5e1" font-size="8.5" text-anchor="middle">How do I submit a bug ticket?</text>
+
+            <rect x="190" width="190" height="18" rx="9" fill="#151d30" stroke="#334155" stroke-width="0.8" />
+            <text x="285" y="12" fill="#cbd5e1" font-size="8.5" text-anchor="middle">What browsers are supported?</text>
+          </g>
+        </g>
+      </g>
+
+      <!-- Quick chips bar -->
+      <g transform="translate(0, 480)">
+        <rect width="760" height="34" fill="#101726" stroke="#1e293b" stroke-width="1" />
+        <text x="24" y="21" fill="#64748b" font-size="9" font-weight="700">TRY:</text>
+        
+        <rect x="60" y="7" width="130" height="20" rx="10" fill="#151d30" stroke="#1e293b" />
+        <text x="125" y="21" fill="#cbd5e1" font-size="8.5" text-anchor="middle">CloudSync Pro Pricing</text>
+
+        <rect x="200" y="7" width="120" height="20" rx="10" fill="#151d30" stroke="#1e293b" />
+        <text x="260" y="21" fill="#cbd5e1" font-size="8.5" text-anchor="middle">Reset Password</text>
+
+        <rect x="330" y="7" width="115" height="20" rx="10" fill="#151d30" stroke="#1e293b" />
+        <text x="387" y="21" fill="#cbd5e1" font-size="8.5" text-anchor="middle">Refund Policy</text>
+
+        <rect x="455" y="7" width="120" height="20" rx="10" fill="#151d30" stroke="#1e293b" />
+        <text x="515" y="21" fill="#cbd5e1" font-size="8.5" text-anchor="middle">GDPR &amp; Privacy</text>
+      </g>
+
+      <!-- Input Bar -->
+      <g transform="translate(24, 526)">
+        <rect width="712" height="46" rx="23" fill="#101726" stroke="#334155" stroke-width="1.2" />
+        <text x="24" y="28" fill="#64748b" font-size="11">Ask a question about services, pricing, technical support...</text>
+        <circle cx="645" cy="23" r="14" fill="#151d30" />
+        <text x="645" y="27" fill="#94a3b8" font-size="10" text-anchor="middle">🎤</text>
+        <circle cx="682" cy="23" r="16" fill="#4f46e5" />
+        <polygon points="678,17 689,23 678,29" fill="#ffffff" />
+      </g>
+    </g>
+  </g>
+</svg>

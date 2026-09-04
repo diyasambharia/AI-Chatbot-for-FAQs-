@@ -1,0 +1,27 @@
+# TechCorp Solutions - Technical Support & Service Level Agreement (SLA)
+
+## Q: What are your support hours and availability?
+A: Our support tiers provide the following hours:
+- Standard Support (Starter & Growth plans): Monday through Friday, 8:00 AM to 6:00 PM PST.
+- Premium Support (Enterprise plan): 24/7/365 priority assistance via phone, email, and private Slack channel.
+
+## Q: What is your guaranteed SLA response time for technical issues?
+A: Our Service Level Agreement response targets are:
+- Priority 1 (System Down / Critical Outage): Under 15 minutes response time, 24/7.
+- Priority 2 (Major Feature Impairment): Under 2 hours response time.
+- Priority 3 (Minor Bug / Performance Degradation): Under 8 business hours.
+- Priority 4 (General Inquiries & Configuration): Under 24 business hours.
+
+## Q: How do I submit a bug report or support ticket?
+A: You can open a ticket through:
+1. Support Portal: Log into dashboard.techcorp.io and click "Help & Support" > "New Ticket".
+2. Email: Send your request, error logs, and system details to support@techcorp.io.
+3. In-App Chat: Click the chatbot icon in the bottom right corner of the web console.
+
+## Q: What browsers and operating systems are officially supported?
+A: The web dashboard supports:
+- Chrome 105+, Firefox 110+, Safari 16+, Edge 105+
+- Operating systems: Windows 10/11, macOS Monterey+, Ubuntu 20.04+, and modern iOS/Android mobile browsers.
+
+## Q: Do you provide dedicated developer training and onboarding?
+A: Yes. All Enterprise subscriptions include 4 hours of live virtual training for engineering teams, architectural architecture review, and custom deployment guidance.

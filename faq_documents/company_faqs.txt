@@ -1,0 +1,20 @@
+# TechCorp Solutions - Company Overview & General FAQs
+
+## Q: What is TechCorp Solutions?
+A: TechCorp Solutions is a leading software and digital transformation company founded in 2020. We specialize in enterprise cloud migration, artificial intelligence workflows, data analytics, and custom modern software engineering.
+
+## Q: Where is TechCorp Solutions located?
+A: Our global headquarters is located in San Francisco, California (500 Howard Street, Suite 400, San Francisco, CA 94105). We also maintain regional innovation hubs in New York, London, and Singapore, alongside a distributed remote workforce across 15 countries.
+
+## Q: What are your standard business and operating hours?
+A: Our general offices and standard customer service teams operate Monday through Friday from 8:00 AM to 6:00 PM Pacific Standard Time (PST). Our technical incident response team operates 24/7/365 for critical production alerts.
+
+## Q: How can I contact TechCorp customer support and sales?
+A: You can reach us through multiple channels:
+- Sales Inquiries: sales@techcorp.io or +1 (800) 555-0199 (Mon-Fri, 9am-5pm PST)
+- Customer Support: support@techcorp.io or through the in-app Help Center
+- Media & Press: press@techcorp.io
+- Security Reports: security@techcorp.io
+
+## Q: What industries does TechCorp Solutions serve?
+A: We build software and AI solutions for financial services, healthcare and life sciences, retail and e-commerce, logistics, and SaaS technology companies.

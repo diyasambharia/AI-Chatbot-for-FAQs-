@@ -1,0 +1,22 @@
+# TechCorp Solutions - Products, Pricing, and Subscription Plans
+
+## Q: What products does TechCorp offer?
+A: TechCorp offers three flagship products:
+1. CloudSync Pro: An automated cloud migration and infrastructure observability platform.
+2. AI Assistant Plus: An intelligent enterprise conversational agent powered by retrieval-augmented generation.
+3. SecureGuard Suite: A real-time API monitoring and automated compliance audit toolkit.
+
+## Q: How much does CloudSync Pro cost?
+A: CloudSync Pro is offered in three tiers:
+- Starter Tier: $49/month for small teams managing up to 25 cloud resources with community support.
+- Growth Tier: $149/month for mid-market businesses managing up to 250 resources with automated daily backups and email support.
+- Enterprise Tier: $499/month for unlimited resources, multi-cloud redundancy, dedicated account manager, and custom SLA.
+
+## Q: What is AI Assistant Plus and what are its features?
+A: AI Assistant Plus is our AI-powered FAQ and customer support assistant. It integrates directly with website frontends, Zendesk, and Slack. Features include semantic document search, automated confidence scoring, multi-language translation in 30+ languages, and analytics dashboards.
+
+## Q: Do you offer a free trial?
+A: Yes! All our products offer a 14-day full-featured free trial with no credit card required at sign up. You can test integrations, upload custom FAQ documents, and explore all dashboard features during this period.
+
+## Q: Are there discounts for annual billing or non-profit organizations?
+A: Yes. Annual subscriptions receive a 20% discount compared to month-to-month billing. We also offer a 30% discount for qualified non-profit educational and healthcare institutions. Contact sales@techcorp.io for verification.

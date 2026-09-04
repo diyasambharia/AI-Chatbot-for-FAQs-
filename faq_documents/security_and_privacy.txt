@@ -1,0 +1,20 @@
+# TechCorp Solutions - Security, Privacy, and Account Management
+
+## Q: How do I reset my account password?
+A: To reset your account password:
+1. Visit https://dashboard.techcorp.io/login and click "Forgot Password".
+2. Enter the email address registered with your account and click "Send Reset Link".
+3. Check your inbox for the reset link (valid for 30 minutes).
+4. Enter your new password. Requirements: At least 10 characters, 1 uppercase letter, 1 number, and 1 special symbol.
+
+## Q: Does TechCorp support Two-Factor Authentication (2FA)?
+A: Yes! We strongly recommend enabling Two-Factor Authentication. Go to Account Settings > Security > Multi-Factor Authentication. We support standard TOTP authenticator apps including Google Authenticator, Authy, and 1Password, as well as hardware security keys (FIDO2 / WebAuthn).
+
+## Q: How is customer data encrypted and protected?
+A: All customer data is encrypted in transit using TLS 1.3 and encrypted at rest using AES-256. We operate on SOC-2 Type II certified and ISO 27001 compliant cloud infrastructure.
+
+## Q: Is TechCorp GDPR and CCPA compliant?
+A: Yes. We fully comply with the General Data Protection Regulation (GDPR) and California Consumer Privacy Act (CCPA). Users can request an export of their stored personal data or request permanent account deletion by emailing privacy@techcorp.io.
+
+## Q: Do you train AI models on customer documents or conversations?
+A: No. TechCorp strictly adheres to our Enterprise Privacy Guarantee: Customer documents, uploaded FAQs, and chat queries are never used to train public foundational AI models.
